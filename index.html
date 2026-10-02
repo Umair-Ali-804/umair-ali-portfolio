@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Umair Ali</title>
+<meta name="description" content="Umair Ali, AI Engineer in Lahore. RAG systems, AI agents, LLM applications and medical hallucination detection research.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one 1120px column; hero is a two-up (statement | portrait + eval readout); each case study is a two-up (story | numbered pipeline) that stacks under 880px. Single committed dark look. */
+:root{
+  --bg:#0B0D10;
+  --surface:#15181D;
+  --surface-2:#1B1F25;
+  --line:#262B33;
+  --fg:#F5F5F5;
+  --muted:#9CA3AF;
+  --faint:#6B7280;
+  --accent:#FF6B2C;
+  --accent-soft:rgba(255,107,44,.12);
+  --accent-line:rgba(255,107,44,.35);
+  --good:#4ADE80;
+  --display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --step--1:.8125rem; --step-0:1rem; --step-1:1.1875rem; --step-2:1.5rem; --step-3:2.125rem; --step-4:clamp(2.6rem,6.2vw,4.5rem);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:var(--step-0);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:clamp(16px,4vw,32px)}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.015em}
+p{margin:0}
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:var(--step--1);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.label b{color:var(--accent);font-weight:500}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(11,13,16,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-weight:700;white-space:nowrap}
+.mark{width:30px;height:30px;border:1.5px solid var(--accent);border-radius:7px;display:grid;place-items:center;font-family:var(--mono);font-size:.75rem;color:var(--accent)}
+.nav ul{display:flex;gap:4px;list-style:none;margin:0 0 0 auto;padding:0;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav ul::-webkit-scrollbar{display:none}
+.nav ul a{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:var(--muted);font-size:.875rem;white-space:nowrap}
+.nav ul a:hover{color:var(--fg);background:var(--surface)}
+
+/* buttons */
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);text-decoration:none;font-weight:500;font-size:.9375rem;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#160A04}
+.btn.primary:hover{background:#ff7d45}
+.btn svg{width:16px;height:16px;flex:none}
+
+/* hero */
+.hero{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;opacity:.35;mask-image:radial-gradient(ellipse 70% 80% at 75% 30%,#000 10%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse 70% 80% at 75% 30%,#000 10%,transparent 70%);pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:clamp(28px,5vw,64px);padding-block:clamp(48px,8vw,96px) clamp(48px,7vw,80px);align-items:center}
+.hero h1{font-size:var(--step-4);font-weight:800;line-height:1;margin-top:18px}
+.hero .role{font-family:var(--display);font-size:var(--step-2);font-weight:600;margin-top:14px;color:var(--fg)}
+.hero .role span{color:var(--accent)}
+.hero .lede{color:var(--muted);font-size:var(--step-1);max-width:56ch;margin-top:18px}
+.hero .btns{margin-top:30px}
+.status{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:var(--step--1);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--surface)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px rgba(74,222,128,.15)}
+
+.portrait{display:grid;gap:12px}
+.photo{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1/1;max-width:100%;background:var(--surface)}
+.photo img{width:100%;height:100%;object-fit:cover;filter:saturate(.9)}
+.photo figcaption{position:absolute;left:12px;bottom:12px;font-family:var(--mono);font-size:.75rem;background:rgba(11,13,16,.8);border:1px solid var(--line);padding:4px 9px;border-radius:6px;color:var(--fg)}
+.readout{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-family:var(--mono);font-size:.8125rem;line-height:1.75;overflow-x:auto}
+.readout .cmd{color:var(--muted)}
+.readout .cmd::before{content:"$ ";color:var(--accent)}
+.readout .row{display:flex;justify-content:space-between;gap:16px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.readout .row span:first-child{color:var(--muted)}
+.readout .up{color:var(--good)}
+
+/* sections */
+section{padding-block:clamp(56px,9vw,104px)}
+section + section{border-top:1px solid var(--line)}
+.head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 32px;margin-bottom:clamp(28px,4vw,48px)}
+.head h2{font-size:var(--step-3);font-weight:700;margin-top:10px}
+.head p{color:var(--muted);max-width:52ch}
+
+/* case studies */
+.cases{display:grid;gap:clamp(20px,3vw,28px)}
+.case{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.case-main{padding:clamp(22px,3.4vw,40px);display:grid;gap:22px;align-content:start;min-width:0}
+.case-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{font-family:var(--mono);font-size:.75rem;padding:3px 9px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+.tag.hot{border-color:var(--accent-line);color:var(--accent);background:var(--accent-soft)}
+.case h3{font-size:var(--step-2);font-weight:700;line-height:1.2}
+.case .sub{color:var(--muted);margin-top:6px}
+.field{display:grid;gap:6px}
+.field p{color:#D6D9DE;max-width:62ch}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:.78rem;padding:4px 9px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);color:#D6D9DE;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stat{background:var(--surface);padding:12px 14px;min-width:0}
+.stat strong{display:block;font-family:var(--display);font-size:1.5rem;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.stat strong em{font-style:normal;color:var(--accent)}
+.stat span{display:block;font-size:.8125rem;color:var(--muted);line-height:1.4;margin-top:4px}
+.stats.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.note{font-size:.8125rem;color:var(--faint)}
+
+.case-side{background:var(--surface-2);border-left:1px solid var(--line);padding:clamp(22px,3.4vw,40px);min-width:0;display:grid;align-content:start;gap:14px}
+.flow{list-style:none;margin:0;padding:0;counter-reset:stage;position:relative}
+.flow li{counter-increment:stage;position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:9px 10px 9px 0;border-radius:8px;transition:background .15s}
+.flow li::before{content:counter(stage,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;color:var(--muted);position:relative;z-index:1;transition:color .15s,border-color .15s}
+.flow li:not(:last-child)::after{content:"";position:absolute;left:16.5px;top:43px;bottom:-9px;width:1px;background:var(--line)}
+.flow li:hover::before{color:var(--accent);border-color:var(--accent)}
+.flow b{display:block;font-family:var(--display);font-weight:600;font-size:.98rem;line-height:1.3;padding-top:6px}
+.flow small{display:block;color:var(--muted);font-size:.8438rem;line-height:1.45;margin-top:2px}
+.flow li.tool::before{border-color:var(--accent-line);color:var(--accent)}
+
+.paper{display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;transition:transform .2s,border-color .2s;max-width:100%}
+.paper:hover{transform:translateY(-2px);border-color:var(--accent)}
+.paper img{width:100%;height:auto}
+.authors{font-size:.875rem;color:var(--muted)}
+.authors strong{color:var(--fg);font-weight:500}
+
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.skill{background:var(--bg);padding:20px 22px;display:grid;gap:12px;align-content:start}
+.skill h3{font-size:1rem;font-weight:600;font-family:var(--display)}
+
+/* experience */
+.timeline{display:grid;gap:0}
+.entry{display:grid;grid-template-columns:200px minmax(0,1fr);gap:12px 32px;padding-block:26px;border-top:1px solid var(--line)}
+.entry:first-child{border-top:0;padding-top:0}
+.when{font-family:var(--mono);font-size:.8125rem;color:var(--muted);padding-top:3px;font-variant-numeric:tabular-nums}
+.entry h3{font-size:var(--step-1);font-weight:600}
+.entry .org{color:var(--muted);margin-top:2px}
+.entry ul{margin:14px 0 0;padding-left:18px;color:#D6D9DE;display:grid;gap:8px;max-width:72ch}
+.entry li::marker{color:var(--accent)}
+
+/* services */
+.studio{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.studio-intro{display:grid;gap:18px}
+.studio-intro h2{font-size:var(--step-3);font-weight:700}
+.studio-intro p{color:var(--muted);max-width:52ch}
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:.06em;font-size:1.05rem}
+.wordmark span{color:var(--accent)}
+.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.service{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--surface);display:grid;gap:8px;align-content:start}
+.service h3{font-size:1.02rem;font-weight:600}
+.service p{color:var(--muted);font-size:.9rem;line-height:1.5}
+.service .proof{font-family:var(--mono);font-size:.75rem;color:var(--accent)}
+
+/* contact */
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.contact h2{font-size:var(--step-3);font-weight:700}
+.contact .intro p{color:var(--muted);margin-top:14px;max-width:46ch}
+.links{display:grid;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.links > *{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:12px;padding:16px 18px;border-top:1px solid var(--line);text-decoration:none;background:var(--surface);transition:background .15s}
+.links > *:first-child{border-top:0}
+.links a:hover{background:var(--surface-2)}
+.links .k{font-family:var(--mono);font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.links .v{overflow-wrap:anywhere;min-width:0}
+.links .go{color:var(--accent);font-family:var(--mono)}
+.copy{font:inherit;font-family:var(--mono);font-size:.78rem;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--faint);font-size:.8125rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+
+@media (prefers-reduced-motion:no-preference){
+  .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+  .rise.d2{animation-delay:.08s}.rise.d3{animation-delay:.16s}.rise.d4{animation-delay:.24s}
+  @keyframes rise{from{transform:translateY(10px)}to{transform:none}}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+@media (max-width:1000px){.skills{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:880px){
+  .hero .wrap,.case,.studio,.contact{grid-template-columns:minmax(0,1fr)}
+  .case-side{border-left:0;border-top:1px solid var(--line)}
+  .portrait{max-width:440px}
+  .entry{grid-template-columns:minmax(0,1fr);gap:6px}
+}
+@media (max-width:560px){
+  .services,.skills{grid-template-columns:minmax(0,1fr)}
+  .links > *{grid-template-columns:minmax(0,1fr) auto}
+  .links .k{grid-column:1/-1}
+  .brand .full{display:none}
+  .stats,.stats.four{grid-template-columns:minmax(0,1fr)}
+  .stat{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:12px;align-items:center}
+  .stat span{margin-top:0}
+}
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="mark">UA</span><span class="full">Umair Ali</span></a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#aaxis">AAXIS AI</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="status rise"><span class="dot"></span>Open to AI Engineer roles and client projects</span>
+      <h1 class="rise d2">Umair Ali</h1>
+      <p class="role rise d2">AI Engineer <span>/</span> RAG · Agents · LLM Applications</p>
+      <p class="lede rise d3">I build production-ready AI systems that automate complex workflows and turn company documents into applications people can query, verify and trust. My research focuses on detecting hallucinations in medical LLM output.</p>
+      <div class="btns rise d4">
+        <a class="btn primary" href="#work">View projects</a>
+        <a class="btn" href="https://github.com/Umair-Ali-804" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/umair-ali-6a8185264/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg>LinkedIn</a>
+        <a class="btn" href="assets/Umair_Ali_Resume.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Resume</a>
+      </div>
+    </div>
+    <div class="portrait rise d3">
+      <figure class="photo" style="margin:0">
+        <img src="assets/umair-ali.jpg" alt="Portrait of Umair Ali" width="560" height="560">
+        <figcaption>Lahore, Pakistan</figcaption>
+      </figure>
+      <div class="readout" aria-label="ClinHallu headline results">
+        <div class="cmd">eval clinhallu --test medhallu_pqa_labeled</div>
+        <div class="row"><span>F1, source-only (C1)</span><span>77.11</span></div>
+        <div class="row"><span>F1, adapted (C5)</span><span class="up">93.75 ▲16.64</span></div>
+        <div class="row"><span>AUROC vs best LLM judge</span><span>98.49 / 93.74</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="work">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="label"><b>Selected work</b> · research and shipped systems</div>
+        <h2>Projects with code and live demos</h2>
+      </div>
+      <p>Each project shows the problem, the pipeline I built, the stack, and what it measurably does.</p>
+    </div>
+
+    <div class="cases">
+
+      <!-- ClinHallu -->
+      <article class="case" id="clinhallu">
+        <div class="case-main">
+          <div class="case-top"><span class="tag hot">Research · Master's thesis</span><span class="tag">ITU Lahore</span></div>
+          <div>
+            <h3>ClinHallu: Measuring Source-to-Benchmark Shift and the Over-Flagging Bias in Medical Hallucination Detection</h3>
+            <p class="authors" style="margin-top:10px"><strong>Umair Ali</strong>, Mamoona Tasadduq (ITU Lahore), Javed Ali Khan (University of Hertfordshire)</p>
+          </div>
+          <div class="field">
+            <div class="label">Problem</div>
+            <p>Medical hallucination detectors are usually trained and tested on data from one generation pipeline. Their scores can hide how they behave on a benchmark built a different way, which is the situation every deployed detector faces.</p>
+          </div>
+          <div class="field">
+            <div class="label">What I built</div>
+            <p>A controlled five-condition protocol (C1–C5) that trains on 10,000 PubMedQA-derived examples and adds MedHallu examples in steps of 1,000, with validation, test set, calibration and seeds held fixed. Inside it runs GAER++, my parameter-efficient detector: a frozen DeBERTa-v3 encoder with LoRA, answer-to-context cross-attention, token grounding and explicit answer–evidence disagreement features.</p>
+          </div>
+          <div class="field">
+            <div class="label">Results · 3 seeds, frozen 1,000-example test set</div>
+            <div class="stats four">
+              <div class="stat"><strong><em>93.75</em></strong><span>F1, adapted detector (C5)</span></div>
+              <div class="stat"><strong>+35.91</strong><span>MCC points gained from target data</span></div>
+              <div class="stat"><strong>79.7%</strong><span>of the F1 gain from the first 1,000 examples</span></div>
+              <div class="stat"><strong>11.0M</strong><span>trainable parameters vs 70B judges</span></div>
+            </div>
+            <p class="note">Four zero-shot LLM judges and SelfCheckGPT over-flag correct answers. At 5% hallucination prevalence, GAER++ keeps 50.3% precision against 11.0–27.2% for the judges.</p>
+          </div>
+          <div class="field">
+            <div class="label">Stack</div>
+            <div class="chips"><span class="chip">PyTorch</span><span class="chip">DeBERTa-v3</span><span class="chip">PEFT / LoRA</span><span class="chip">Transformers</span><span class="chip">OpenRouter judges</span><span class="chip">scikit-learn</span></div>
+          </div>
+          <div class="btns">
+            <a class="btn primary" href="https://github.com/Umair-Ali-804/ClinHallu" target="_blank" rel="noopener">Code, data scripts and prompts ↗</a>
+          </div>
+        </div>
+        <div class="case-side">
+          <div class="label">Paper · page 1</div>
+          <a class="paper" href="assets/clinhallu-page1.jpg" target="_blank" rel="noopener" aria-label="Open the first page of the ClinHallu paper">
+            <img src="assets/clinhallu-page1.jpg" alt="First page of the ClinHallu paper, showing title, authors and abstract" width="1075" height="1521" loading="lazy">
+          </a>
+        </div>
+      </article>
+
+      <!-- RAG -->
+      <article class="case" id="rag">
+        <div class="case-main">
+          <div class="case-top"><span class="tag hot">Live demo</span><span class="tag">RAG · Automation</span></div>
+          <div>
+            <h3>AAXIS AI RAG Assistant</h3>
+            <p class="sub">A public company chatbot that answers from live PDFs and shows its sources.</p>
+          </div>
+          <div class="field">
+            <div class="label">Problem</div>
+            <p>Clients, job seekers and staff ask the same questions about services, pricing, policies and HR rules. The answers sit across several PDFs that keep changing, and a fine-tuned model would need retraining after every edit.</p>
+          </div>
+          <div class="field">
+            <div class="label">What it does</div>
+            <p>New or changed PDFs are picked up by an n8n workflow or folder watcher and become answerable within seconds. Content-hashed chunks mean only changed text is re-embedded and removed text is never cited. Answers come in English, Urdu or Roman Urdu, with a Sources panel that opens the PDF at the right page.</p>
+          </div>
+          <div class="field">
+            <div class="label">Evaluation built in</div>
+            <div class="stats">
+              <div class="stat"><strong>Hit@k · MRR</strong><span>retrieval quality, plus nDCG</span></div>
+              <div class="stat"><strong>≥ 0.85</strong><span>faithfulness quality gate</span></div>
+              <div class="stat"><strong>≤ 0.10</strong><span>hallucination-rate gate</span></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="label">Stack</div>
+            <div class="chips"><span class="chip">FastAPI</span><span class="chip">LangChain</span><span class="chip">Chroma</span><span class="chip">BM25 + RRF</span><span class="chip">OpenAI embeddings</span><span class="chip">LangSmith</span><span class="chip">n8n</span><span class="chip">React</span><span class="chip">Docker</span></div>
+          </div>
+          <div class="btns">
+            <a class="btn primary" href="https://aaxis-ai-rag-assistant.onrender.com" target="_blank" rel="noopener">Open live demo ↗</a>
+            <a class="btn" href="https://github.com/Umair-Ali-804/AAXIS_AI_RAG_ASSISTANT" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+        <div class="case-side">
+          <div class="label">Architecture</div>
+          <ol class="flow">
+            <li class="tool"><div><b>Detect</b><small>n8n workflow (Google Drive or local folder) or the built-in watcher calls POST /ingest.</small></div></li>
+            <li><div><b>Extract</b><small>PyMuPDF text; tables rebuilt as rows, running headers and page numbers removed.</small></div></li>
+            <li><div><b>Chunk and diff</b><small>LangChain chunks with content-hash IDs; only new chunks are embedded, stale ones deleted.</small></div></li>
+            <li><div><b>Embed and store</b><small>text-embedding-3-small into Chroma, versioned per document.</small></div></li>
+            <li><div><b>Hybrid retrieval</b><small>Vector + BM25 fused with reciprocal rank fusion; follow-up questions rewritten.</small></div></li>
+            <li><div><b>Grounded answer</b><small>LLM answer with cited passages and a conversation-memory meter.</small></div></li>
+            <li class="tool"><div><b>Trace and evaluate</b><small>LangSmith traces every step; evaluation suite enforces quality gates.</small></div></li>
+          </ol>
+        </div>
+      </article>
+
+      <!-- InvoiceFlow -->
+      <article class="case" id="invoiceflow">
+        <div class="case-main">
+          <div class="case-top"><span class="tag hot">Live demo</span><span class="tag">Document intelligence</span></div>
+          <div>
+            <h3>AAXIS InvoiceFlow</h3>
+            <p class="sub">Invoice capture with human review, posting bills to QuickBooks Online.</p>
+          </div>
+          <div class="field">
+            <div class="label">Problem</div>
+            <p>Accounts payable teams re-key vendor invoices by hand, and duplicate or mis-added invoices slip through and get paid.</p>
+          </div>
+          <div class="field">
+            <div class="label">What it does</div>
+            <p>Reads PDFs, scans, phone photos and forwarded emails, checks the math line by line, catches duplicates and unknown vendors, and shows a reviewer exactly where each problem is on the page. Nothing reaches the books without approval, large invoices need two different approvers, and every action lands in a hash-chained audit trail.</p>
+          </div>
+          <div class="field">
+            <div class="label">Results · 5-invoice demo set, CPU only</div>
+            <div class="stats">
+              <div class="stat"><strong><em>$3,453.59</em></strong><span>duplicate payment stopped</span></div>
+              <div class="stat"><strong>$90.00</strong><span>over-billing caught by math checks</span></div>
+              <div class="stat"><strong>40–120 ms</strong><span>per text PDF; ~10 s per scanned page</span></div>
+            </div>
+            <p class="note">Demo results, not production benchmarks. 20 end-to-end tests.</p>
+          </div>
+          <div class="field">
+            <div class="label">Stack</div>
+            <div class="chips"><span class="chip">FastAPI</span><span class="chip">PyMuPDF</span><span class="chip">OpenCV</span><span class="chip">Tesseract OCR</span><span class="chip">RapidFuzz</span><span class="chip">LLM cross-check</span><span class="chip">QuickBooks API</span><span class="chip">SQLite</span><span class="chip">Docker</span></div>
+          </div>
+          <div class="btns">
+            <a class="btn primary" href="https://aaxis-invoiceflow.onrender.com" target="_blank" rel="noopener">Open live demo ↗</a>
+            <a class="btn" href="https://github.com/Umair-Ali-804/AAXIS_InvoiceFlow" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+        <div class="case-side">
+          <div class="label">Architecture</div>
+          <ol class="flow">
+            <li class="tool"><div><b>Intake</b><small>Upload, .eml or IMAP inbox; every file fingerprinted with SHA-256.</small></div></li>
+            <li><div><b>Read</b><small>PDF text layer, or OpenCV deskew and denoise, then Tesseract OCR with per-word confidence.</small></div></li>
+            <li><div><b>Extract</b><small>Rule-based fields and line items, fuzzy vendor match, optional independent LLM reading.</small></div></li>
+            <li><div><b>Validate</b><small>Qty × price, subtotal, tax and total; duplicates; unknown vendors; impossible dates.</small></div></li>
+            <li><div><b>Review</b><small>Evidence highlights on the page, suggested fixes, two-person approval above the limit.</small></div></li>
+            <li><div><b>Post</b><small>Idempotent QuickBooks Online Bill, so retries never double-post.</small></div></li>
+            <li class="tool"><div><b>Audit</b><small>Hash-chained event log with tamper detection and CSV export.</small></div></li>
+          </ol>
+        </div>
+      </article>
+
+      <!-- Medical coding -->
+      <article class="case" id="medical-coding">
+        <div class="case-main">
+          <div class="case-top"><span class="tag hot">Healthcare AI</span><span class="tag">Multi-stage agent pipeline</span></div>
+          <div>
+            <h3>Medical Coding AI</h3>
+            <p class="sub">Pre-bill coding and claim-integrity assistant for certified coders.</p>
+          </div>
+          <div class="field">
+            <div class="label">Problem</div>
+            <p>Coding clinical notes to ICD-10-CM, CPT and HCPCS takes coder time, and unsupported or invalid codes lead to claim denials. An LLM alone can invent codes the note does not support.</p>
+          </div>
+          <div class="field">
+            <div class="label">What it does</div>
+            <p>Turns a clinical note into evidence-backed codes with Official Guideline citations. A deterministic rule engine validates every suggestion, the platform computes calibrated confidence instead of trusting the model, and only a human coder can approve. A pre-bill scrubber checks the draft claim before export.</p>
+          </div>
+          <div class="field">
+            <div class="label">Scale and checks</div>
+            <div class="stats">
+              <div class="stat"><strong><em>98,262</em></strong><span>ICD-10-CM FY2026 codes indexed</span></div>
+              <div class="stat"><strong>30+</strong><span>deterministic pre-bill claim rules</span></div>
+              <div class="stat"><strong>127</strong><span>automated tests</span></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="label">Stack</div>
+            <div class="chips"><span class="chip">FastAPI</span><span class="chip">PostgreSQL</span><span class="chip">Qdrant</span><span class="chip">BM25 + RRF</span><span class="chip">OpenRouter</span><span class="chip">Next.js</span><span class="chip">n8n</span><span class="chip">Docker</span></div>
+          </div>
+          <div class="btns">
+            <a class="btn primary" href="https://github.com/Umair-Ali-804/Medical-Coding-AI-Application" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+        <div class="case-side">
+          <div class="label">Architecture</div>
+          <ol class="flow">
+            <li class="tool"><div><b>Ingest</b><small>PDF, DOCX or TXT; cleaning and clinical section detection (SOAP, H&amp;P, discharge).</small></div></li>
+            <li><div><b>Clinical NLP</b><small>Lexicon and problem-list parser with ConText negation, uncertainty and family history.</small></div></li>
+            <li><div><b>Hybrid RAG</b><small>Qdrant dense + BM25 over official code sets and guideline passages.</small></div></li>
+            <li><div><b>LLM suggestion</b><small>Strict JSON schema with verbatim evidence for every code.</small></div></li>
+            <li><div><b>Validate</b><small>Code exists and is billable, Excludes1, laterality, sex and age edits, documentation support.</small></div></li>
+            <li><div><b>Confidence and routing</b><small>Platform score with weights fitted on a validation split.</small></div></li>
+            <li class="tool"><div><b>Coder review and claim scrub</b><small>Approve, edit or reject; NCCI and MUE checks; audited export.</small></div></li>
+          </ol>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="label"><b>Skills</b> · tools I ship with</div>
+        <h2>Technical skills</h2>
+      </div>
+    </div>
+    <div class="skills">
+      <div class="skill"><h3>Generative AI and agents</h3><div class="chips"><span class="chip">LangChain</span><span class="chip">LangGraph</span><span class="chip">CrewAI</span><span class="chip">AutoGen</span><span class="chip">RAG</span><span class="chip">AI Agents</span><span class="chip">Prompt engineering</span><span class="chip">n8n</span></div></div>
+      <div class="skill"><h3>LLM providers</h3><div class="chips"><span class="chip">OpenAI API</span><span class="chip">Anthropic API</span><span class="chip">Gemini API</span><span class="chip">OpenRouter</span><span class="chip">Hugging Face Transformers</span></div></div>
+      <div class="skill"><h3>Machine learning</h3><div class="chips"><span class="chip">Python</span><span class="chip">PyTorch</span><span class="chip">TensorFlow</span><span class="chip">scikit-learn</span><span class="chip">XGBoost</span><span class="chip">PEFT / LoRA</span></div></div>
+      <div class="skill"><h3>Vector databases and retrieval</h3><div class="chips"><span class="chip">FAISS</span><span class="chip">Pinecone</span><span class="chip">Qdrant</span><span class="chip">pgvector</span><span class="chip">Chroma</span><span class="chip">Hybrid search</span></div></div>
+      <div class="skill"><h3>Computer vision and documents</h3><div class="chips"><span class="chip">YOLOv8</span><span class="chip">OpenCV</span><span class="chip">OCR</span><span class="chip">PyMuPDF</span></div></div>
+      <div class="skill"><h3>MLOps and deployment</h3><div class="chips"><span class="chip">Docker</span><span class="chip">MLflow</span><span class="chip">Git</span><span class="chip">GitHub Actions</span><span class="chip">CI/CD</span><span class="chip">AWS EC2</span><span class="chip">AWS S3</span><span class="chip">Render</span></div></div>
+      <div class="skill"><h3>Backend and data</h3><div class="chips"><span class="chip">FastAPI</span><span class="chip">REST APIs</span><span class="chip">SQL</span><span class="chip">PostgreSQL</span><span class="chip">SQLite</span><span class="chip">React</span><span class="chip">Next.js</span></div></div>
+      <div class="skill"><h3>Evaluation and AI safety</h3><div class="chips"><span class="chip">RAGAS</span><span class="chip">TruLens</span><span class="chip">LangSmith</span><span class="chip">SHAP</span><span class="chip">LLM evaluation</span><span class="chip">Hallucination detection</span><span class="chip">Calibration</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="label"><b>Experience</b> · education · certification</div>
+        <h2>Where I work and study</h2>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="entry">
+        <div class="when">Jan 2025 – Present</div>
+        <div>
+          <h3>Associate AI Engineer · Graduate Research Assistant</h3>
+          <p class="org">Information Technology University (ITU), Lahore</p>
+          <ul>
+            <li>Design and develop production-ready AI applications with LLMs, RAG, LangChain, LangGraph, FastAPI and vector databases for document understanding, semantic search and domain-specific question answering.</li>
+            <li>Engineer AI pipelines covering preprocessing, semantic chunking, embeddings, hybrid retrieval, reranking, prompt engineering, agentic workflows and REST API integration.</li>
+            <li>Research trustworthy generative AI: hallucination detection with natural language inference, uncertainty estimation and biomedical knowledge, and turn research results into deployable systems.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">Jun 2024 – Present</div>
+        <div>
+          <h3>MS in Data Science</h3>
+          <p class="org">Information Technology University (ITU), Lahore · Thesis: ClinHallu</p>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2019 – 2023</div>
+        <div>
+          <h3>BS Engineering</h3>
+          <p class="org">University of Engineering and Technology (UET), Lahore</p>
+        </div>
+      </div>
+      <div class="entry">
+        <div class="when">2023</div>
+        <div>
+          <h3>Deep Learning Specialization</h3>
+          <p class="org">Coursera · Andrew Ng</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="aaxis">
+  <div class="wrap studio">
+    <div class="studio-intro">
+      <div class="wordmark">AAXIS <span>AI</span> AUTOMATIONS</div>
+      <h2>Work with me</h2>
+      <p>Through AAXIS AI Automations I build AI systems for businesses: assistants that answer from company documents, pipelines that read and check paperwork, and agents that take repetitive steps off a team's plate. Every build keeps a human in control and ships with evaluation, so you can see how well it works before you rely on it.</p>
+      <div class="btns"><a class="btn primary" href="#contact">Start a project</a></div>
+    </div>
+    <div class="services">
+      <div class="service"><h3>RAG knowledge assistants</h3><p>Chatbots grounded in your PDFs and docs, with citations, hybrid search and automatic re-indexing.</p><span class="proof">see: AAXIS RAG Assistant</span></div>
+      <div class="service"><h3>Document intelligence</h3><p>OCR, extraction and validation for invoices, forms and clinical notes, with a review screen for exceptions.</p><span class="proof">see: InvoiceFlow</span></div>
+      <div class="service"><h3>AI agents</h3><p>Multi-step agent workflows with LangGraph, tool use, deterministic checks and human approval steps.</p><span class="proof">see: Medical Coding AI</span></div>
+      <div class="service"><h3>Workflow automation</h3><p>n8n pipelines that connect Google Drive, email, Slack and your APIs to AI services.</p><span class="proof">n8n · webhooks · APIs</span></div>
+      <div class="service"><h3>Custom LLM applications</h3><p>FastAPI backends and web apps on OpenAI, Anthropic, Gemini or open models, deployed with Docker.</p><span class="proof">FastAPI · Docker · Render · AWS</span></div>
+      <div class="service"><h3>LLM evaluation</h3><p>Faithfulness, retrieval and hallucination metrics with quality gates and tracing, before and after launch.</p><span class="proof">RAGAS · LangSmith · custom suites</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap contact">
+    <div class="intro">
+      <div class="label"><b>Contact</b></div>
+      <h2 style="margin-top:10px">Let's build something reliable.</h2>
+      <p>Hiring for an AI Engineer role, or need a RAG system, agent or automation built? Email me or message me on LinkedIn. I'm based in Lahore and work with remote teams.</p>
+    </div>
+    <div class="links">
+      <div>
+        <span class="k">Email</span>
+        <span class="v mono" id="email">aliumair64488@gmail.com</span>
+        <button class="copy" id="copy-email" type="button">Copy</button>
+      </div>
+      <a href="https://www.linkedin.com/in/umair-ali-6a8185264/" target="_blank" rel="noopener"><span class="k">LinkedIn</span><span class="v">in/umair-ali-6a8185264</span><span class="go">↗</span></a>
+      <a href="https://github.com/Umair-Ali-804" target="_blank" rel="noopener"><span class="k">GitHub</span><span class="v">Umair-Ali-804</span><span class="go">↗</span></a>
+      <a href="https://medium.com/@aliumair64488" target="_blank" rel="noopener"><span class="k">Medium</span><span class="v">@aliumair64488</span><span class="go">↗</span></a>
+      <a href="assets/Umair_Ali_Resume.pdf" target="_blank" rel="noopener"><span class="k">Resume</span><span class="v">Umair_Ali_Resume.pdf</span><span class="go">↗</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Umair Ali · Lahore, Pakistan</span>
+    <span class="mono">AI Engineer · AAXIS AI Automations</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn=document.getElementById('copy-email');
+  var el=document.getElementById('email');
+  btn.addEventListener('click',function(){
+    var text=el.textContent.trim();
+    function done(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1600)}
+    function fallback(){var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Selected';setTimeout(function(){btn.textContent='Copy'},1600)}
+    try{navigator.clipboard.writeText(text).then(done,fallback)}catch(e){fallback()}
+  });
+})();
+</script>
+
+</body>
+</html>
